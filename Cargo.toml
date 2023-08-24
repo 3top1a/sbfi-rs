@@ -1,0 +1,25 @@
+[package]
+name = "sbfi"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+compiler_builtins = { version = "0.1.91", features = ["mem"] }
+volatile = "0.4.6"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+strip = false  # Automatically strip symbols from the binary.
+opt-level = "z"  # Optimize for size.
+lto = true
+codegen-units = 1
+panic = "abort"
+overflow-checks = false
+
+[unstable]
+#build-std-features = ["compiler-builtins-mem"]
+#build-std = ["core", "compiler-builtins"]
