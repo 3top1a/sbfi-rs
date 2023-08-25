@@ -11,15 +11,15 @@ RUSTFLAGS="-Ctarget-cpu=native -Clink-args=-nostartfiles -Ctarget-feature=+crt-s
 cp target/x86_64-unknown-linux-gnu/release/sbfi sbfi
 
 # Remove unnecesary sectors
-#objcopy -R .shstrtab -R .comment sbfi sbfi.tmp
-#mv sbfi.tmp sbfi
+objcopy -R .shstrtab -R .comment sbfi sbfi.tmp
+mv sbfi.tmp sbfi
 
 # Remove everything after Hello Rust!\n\x00, mainly the section header
 # Ideally you would use something like https://github.com/blackle/Section-Header-Stripper
 #python truncate.py
 
 # Or sstrip from https://github.com/BR903/ELFkickers, highly recommend that
-#sstrip -z sbfi
+sstrip -z sbfi
 
 echo
 echo "Final binary size:"

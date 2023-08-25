@@ -14,7 +14,7 @@ pub fn write_to_std_out(string_pointer: *const u8, string_length: usize) {
     }
 }
 
-pub fn write_str_slice(string: &str) {
+pub fn write_str_slice(string: &'static str) {
     write_to_std_out(string.as_ptr(), string.len())
 }
 

@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 compiler_builtins = { version = "0.1.91", features = ["mem"] }
-volatile = "0.4.6"
 
 [profile.dev]
 panic = "abort"
