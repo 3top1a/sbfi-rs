@@ -19,11 +19,14 @@ mv sbfi.tmp sbfi
 #python truncate.py
 
 # Or sstrip from https://github.com/BR903/ELFkickers, highly recommend that
-sstrip -z sbfi
+#sstrip -z sbfi
 
 echo
 echo "Final binary size:"
 /bin/ls -l sbfi | awk '{print $5}'
 file sbfi
 
-./sbfi
+#./sbfi
+# Should print �%
+echo "-." | ./sbfi
+echo "++++[>+++++<-]>[<+++++>-]+<+[>[>+>+<<-]++>>[<<+>>-]>>>[-]++>[-]+>>>+[[-]++++++>>>]<<<[[<++++++++<++>>-]+<.<[>----<-]<]<<[>>>>>[>>>[-]+++++++++<[>-<-]+++++++++>[-[<->-]+[<<<]]<[>+<-]>]<<-]<<-]" | ./sbfi
