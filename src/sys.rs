@@ -51,6 +51,8 @@ pub fn read_from_std_in(output_pointer: *const u8, output_length: usize) {
 pub fn read_from_std_in_until_EOF(output_pointer: *const u8, output_length: usize) {
     let mut x: u64 = 1;
 
+    /// TODO Reads only last line
+
     while x != 0 {
         /*{
             let tmp = [x as u8; 1];

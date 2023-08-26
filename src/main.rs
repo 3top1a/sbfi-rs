@@ -27,14 +27,11 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
     let mut current_input_index: usize = 0;
     let mut current_tape_pointer: usize = 0;
     let mut tape: [u8; MAX_TAPE_SIZE] = [0; MAX_TAPE_SIZE];
+
+    let program_length = input.iter().filter(|x| **x != 0).count();
     loop {
         let current_char: u8 = unsafe { *input.get_unchecked(current_input_index) };
         let current_cell_value: u8 = unsafe { *tape.get_unchecked(current_tape_pointer) };
-
-        /*unsafe {
-            let sc: [u8; 1] = [current_char];
-            syscall!(WRITE, 1, sc.as_ptr(), 1);
-        }*/
 
         match current_char {
             b'>' => {
@@ -61,6 +58,10 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
                 while current_cell_value == 0 {
                     current_input_index += 1;
 
+                    if current_input_index > program_length {
+                        error("UNMATCHED [");
+                    }
+
                     let current_char: u8 = unsafe { *input.get_unchecked(current_input_index) };
                     match current_char {
                         b']' => {
@@ -81,6 +82,10 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
                 let mut bracket_depth: u8 = 0;
                 while current_cell_value != 0 {
                     current_input_index -= 1;
+
+                    if current_input_index > program_length {
+                        error("UNMATCHED ]");
+                    }
 
                     let current_char: u8 = unsafe { *input.get_unchecked(current_input_index) };
                     match current_char {
