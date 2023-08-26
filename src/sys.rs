@@ -36,7 +36,7 @@ pub struct Writer;
 // https://degaart.github.io/20230123.html
 impl fmt::Write for Writer {
     fn write_str(&mut self, s: &str) -> Result<(), fmt::Error> {
-        write_str_slice(s.clone());
+        write_str_slice(s);
         Ok(())
     }
 }

@@ -3,7 +3,7 @@
 
 mod sys;
 
-use core::fmt::Write;
+
 use sc::syscall;
 use sys::*;
 
@@ -12,16 +12,24 @@ const MAX_STDIN_SIZE: usize = 1024 * 4;
 /// 2^16 Cells
 const MAX_TAPE_SIZE: usize = 2usize.pow(16);
 
-#[cfg(not(debug_assertions))]
-macro_rules! dbg {
+#[cfg(debug_assertions)]
+use core::fmt::Write;
+#[cfg(debug_assertions)]
+macro_rules! dbg_in {
     ($($arg:tt)*) => {{
-        Writer{}.write_fmt(format_args!($($arg)*));
+        Writer{}.write_fmt(format_args!($($arg)*)).unwrap();
     }}
 }
 #[cfg(debug_assertions)]
 macro_rules! dbg {
     ($($arg:tt)*) => {{
-        
+        dbg_in!("{}\n", format_args!($($arg)*));
+    }}
+}
+#[cfg(not(debug_assertions))]
+macro_rules! dbg {
+    ($($arg:tt)*) => {{
+        ;
     }}
 }
 
@@ -34,13 +42,13 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
 
     // Main loop
     let mut current_input_index: usize = 0;
-    let mut current_tape_pointer: usize = 0;
+    let mut current_tape_pointer: u16 = 0;
     let mut tape: [u8; MAX_TAPE_SIZE] = [0; MAX_TAPE_SIZE];
 
     let program_length = input.iter().filter(|x| **x != 0).count();
     loop {
         let current_char: u8 = unsafe { *input.get_unchecked(current_input_index) };
-        let current_cell_value: u8 = unsafe { *tape.get_unchecked(current_tape_pointer) };
+        let current_cell_value: u8 = unsafe { *tape.get_unchecked(current_tape_pointer as usize) };
 
         if current_input_index > program_length {
             exit(2);
@@ -48,27 +56,29 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
 
         match current_char {
             b'>' => {
-                dbg!("> at ");
-                dbg!(current_input_index);
-                dbg!(current_tape_pointer);
+                dbg!("{}", "> at ");
+                dbg!("input: {}", current_input_index);
+                dbg!("tape: {}", current_tape_pointer);
                 current_tape_pointer += 1;
             }
             b'<' => {
-                dbg!("< at");
-                dbg!(current_input_index);
-                dbg!(current_tape_pointer);
+                dbg!("{}", "< at");
+                dbg!("input: {}", current_input_index);
+                dbg!("tape: {}", current_tape_pointer);
                 current_tape_pointer -= 1;
             }
             b'+' => unsafe {
-                dbg!("+\n");
-                *(tape.as_mut_ptr().wrapping_add(current_tape_pointer)) =
+                dbg!("{}", "+ at ");
+                dbg!("input: {}", current_input_index);
+                dbg!("cell: {}", current_cell_value);
+                *(tape.as_mut_ptr().wrapping_add(current_tape_pointer as usize)) =
                     current_cell_value.wrapping_add(1);
             },
             b'-' => unsafe {
-                dbg!("- at ");
-                dbg!(current_input_index);
-                dbg!(current_tape_pointer);
-                *(tape.as_mut_ptr().wrapping_add(current_tape_pointer)) =
+                dbg!("{}", "- at ");
+                dbg!("input: {}", current_input_index);
+                dbg!("cell: {}", current_cell_value);
+                *(tape.as_mut_ptr().wrapping_add(current_tape_pointer as usize)) =
                     current_cell_value.wrapping_sub(1);
             },
             b'.' => unsafe {
@@ -81,11 +91,11 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
 
                 // Acts as both a loop and an if
                 while current_cell_value == 0 {
-                    dbg!("[ inner loop");
-                    dbg!(current_input_index);
-                    dbg!(current_cell_value);
-                    dbg!(bracket_depth);
-                    dbg!("\n");
+                    dbg!("{}", "[ inner loop");
+                    dbg!("input: {}", current_input_index);
+                    dbg!("cell: {}", current_cell_value);
+                    dbg!("bracket: {}", bracket_depth);
+                    dbg!("{}", "\n");
 
                     current_input_index += 1;
 
@@ -109,7 +119,7 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
                 let mut bracket_depth: u8 = 0;
                 current_input_index -= 1;
 
-                dbg!("]");
+                dbg!("{}", "]");
 
                 while current_cell_value != 0 {
                     current_input_index -= 1;
@@ -118,11 +128,11 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
                         error("UNMATCHED ]");
                     }
 
-                    dbg!("] inner loop");
-                    dbg!(current_input_index);
-                    dbg!(current_cell_value);
-                    dbg!(bracket_depth);
-                    dbg!("\n");
+                    dbg!("{}", "] inner loop");
+                    dbg!("input: {}", current_input_index);
+                    dbg!("cell: {}", current_cell_value);
+                    dbg!("bracket: {}", bracket_depth);
+                    dbg!("{}", "\n");
 
                     let current_char: u8 = unsafe { *input.get_unchecked(current_input_index) };
                     match current_char {

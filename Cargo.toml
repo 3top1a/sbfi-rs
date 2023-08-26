@@ -11,6 +11,7 @@ sc = "0.2.7"
 
 [profile.dev]
 panic = "abort"
+overflow-checks = false
 
 [profile.release]
 strip = false  # Automatically strip symbols from the binary.
