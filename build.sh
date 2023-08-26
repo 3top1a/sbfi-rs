@@ -14,12 +14,12 @@ cp target/x86_64-unknown-linux-gnu/release/sbfi sbfi
 objcopy -R .shstrtab -R .comment sbfi sbfi.tmp
 mv sbfi.tmp sbfi
 
-# Remove everything after Hello Rust!\n\x00, mainly the section header
-# Ideally you would use something like https://github.com/blackle/Section-Header-Stripper
-#python truncate.py
-
-# Or sstrip from https://github.com/BR903/ELFkickers, highly recommend that
+# sstrip from https://github.com/BR903/ELFkickers, highly recommend that
 #sstrip -z sbfi
+
+# Remove ud2 instructions
+# TODO
+# https://clang.llvm.org/docs/AddressSanitizer.html
 
 echo
 echo "Final binary size:"
@@ -29,4 +29,4 @@ file sbfi
 #./sbfi
 # Should print �%
 echo "-." | ./sbfi
-echo "++++[>+++++<-]>[<+++++>-]+<+[>[>+>+<<-]++>>[<<+>>-]>>>[-]++>[-]+>>>+[[-]++++++>>>]<<<[[<++++++++<++>>-]+<.<[>----<-]<]<<[>>>>>[>>>[-]+++++++++<[>-<-]+++++++++>[-[<->-]+[<<<]]<[>+<-]>]<<-]<<-]" | ./sbfi
+echo "+[-->-[>>+>-----<<]<--<---]>-.>>>+.>>..+++[.>]<<<<.+++.------.<<-.>>>>+." | ./sbfi

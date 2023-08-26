@@ -20,6 +20,5 @@ codegen-units = 1
 panic = "abort"
 overflow-checks = false
 
-[unstable]
-#build-std-features = ["compiler-builtins-mem"]
-#build-std = ["core", "compiler-builtins"]
+[build]
+target = "x86_64-unknown-linux-gnu"

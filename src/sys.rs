@@ -27,8 +27,18 @@ pub fn error(string: &'static str) {
     exit(1);
 }
 
-pub fn write_str_slice(string: &'static str) {
+pub fn write_str_slice(string: &str) {
     write_to_std_out(string.as_ptr(), string.len())
+}
+
+use core::fmt;
+pub struct Writer;
+// https://degaart.github.io/20230123.html
+impl fmt::Write for Writer {
+    fn write_str(&mut self, s: &str) -> Result<(), fmt::Error> {
+        write_str_slice(s.clone());
+        Ok(())
+    }
 }
 
 /// Read from stdin
