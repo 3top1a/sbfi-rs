@@ -59,7 +59,8 @@ pub fn read_from_std_in(output_pointer: *const u8, output_length: usize) {
 }
 
 pub fn read_from_std_in_until_EOF(output_pointer: *const u8, output_length: usize) {
-    let mut x: u64 = 1;
+    let mut x: i64 = 1;
+    let mut length: i64 = 0;
 
     /// TODO Reads only last line
 
@@ -74,12 +75,14 @@ pub fn read_from_std_in_until_EOF(output_pointer: *const u8, output_length: usiz
                 "syscall",
                 in("rax") 0, // read syscall number
                 in("rdi") 0,
-                in("rsi") output_pointer,
-                in("rdx") output_length,
+                in("rsi") output_pointer.wrapping_add(length as usize),
+                in("rdx") output_length.wrapping_sub(length as usize),
             );
 
             asm!("mov {}, rax", out(reg) x);
         }
+
+        length += x;
     }
 }
 
