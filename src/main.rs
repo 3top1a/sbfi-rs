@@ -84,7 +84,9 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
                 let tmp_buffer: [u8; 1] = [current_cell_value];
                 syscall!(WRITE, 1, tmp_buffer.as_ptr(), 1);
             },
-            b',' => error("TODO implement,"),
+            b',' => {
+                read_from_std_in(tape.as_ptr().wrapping_add(current_tape_pointer.into()), 1)
+            },
             b'[' => {
                 let mut bracket_depth: u8 = 0;
 
