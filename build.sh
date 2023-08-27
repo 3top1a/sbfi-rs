@@ -15,7 +15,7 @@ objcopy -R .shstrtab -R .comment sbfi sbfi.tmp;
 mv sbfi.tmp sbfi;
 
 # sstrip from https://github.com/BR903/ELFkickers, highly recommend that
-#sstrip -z sbfi
+sstrip -z sbfi
 
 # Remove ud2 instructions
 # TODO
@@ -29,4 +29,5 @@ file sbfi;
 #./sbfi
 # Should print �%
 echo "-." | ./sbfi;
+echo;
 echo "+[-->-[>>+>-----<<]<--<---]>-.>>>+.>>..+++[.>]<<<<.+++.------.<<-.>>>>+." | ./sbfi;

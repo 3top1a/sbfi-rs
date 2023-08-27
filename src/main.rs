@@ -47,9 +47,9 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
         let current_char: u8 = unsafe { *input.get_unchecked(current_input_index) };
         let current_cell_value: u8 = unsafe { *tape.get_unchecked(current_tape_pointer as usize) };
 
-        if current_input_index > program_length {
+        /*if current_input_index > program_length {
             exit(2);
-        }
+        }*/
 
         match current_char {
             b'>' => {
@@ -99,7 +99,7 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
                     current_input_index += 1;
 
                     if current_input_index > program_length {
-                        error("UNMATCHED [");
+                        error("E");
                     }
 
                     let current_char: u8 = unsafe { *input.get_unchecked(current_input_index) };
@@ -124,7 +124,7 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
                         current_input_index -= 1;
 
                         if current_input_index > program_length {
-                            error("UNMATCHED ]");
+                            error("E");
                         }
 
                         dbg!("{}", "] inner loop");
