@@ -10,6 +10,8 @@ pub fn write_to_std_out(string_pointer: *const u8, string_length: usize) {
             in("rdi") 1, // stdout file descriptor, 2 is stderr
             in("rsi") string_pointer,
             in("rdx") string_length,
+            out("rcx") _, // clobbered by syscalls
+            out("r11") _, // clobbered by syscalls
         );
     }
 }
@@ -58,18 +60,11 @@ pub fn read_from_std_in(output_pointer: *const u8, output_length: usize) {
     }
 }
 
-pub fn read_from_std_in_until_EOF(output_pointer: *const u8, output_length: usize) {
+pub fn read_from_std_in_until_eof(output_pointer: *const u8, output_length: usize) {
     let mut x: i64 = 1;
     let mut length: i64 = 0;
 
-    /// TODO Reads only last line
-
     while x != 0 {
-        /*{
-            let tmp = [x as u8; 1];
-            write_to_std_out(tmp.as_ptr(), 1);
-        }*/
-
         unsafe {
             asm!(
                 "syscall",
@@ -77,9 +72,10 @@ pub fn read_from_std_in_until_EOF(output_pointer: *const u8, output_length: usiz
                 in("rdi") 0,
                 in("rsi") output_pointer.wrapping_add(length as usize),
                 in("rdx") output_length.wrapping_sub(length as usize),
+                out("rcx") _, // clobbered by syscalls
+                out("r11") _, // clobbered by syscalls
+                lateout("rax") x,
             );
-
-            asm!("mov {}, rax", out(reg) x);
         }
 
         length += x;

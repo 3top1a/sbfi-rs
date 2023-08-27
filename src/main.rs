@@ -3,7 +3,6 @@
 
 mod sys;
 
-use sc::syscall;
 use sys::*;
 
 /// 4 KB max input size
@@ -35,7 +34,7 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
     // Get whole program from STDin
     // Limited to MAX_STDIN_SIZE
     let input: [u8; MAX_STDIN_SIZE] = [0; MAX_STDIN_SIZE];
-    read_from_std_in_until_EOF(input.as_ptr(), MAX_STDIN_SIZE);
+    read_from_std_in_until_eof(input.as_ptr(), MAX_STDIN_SIZE);
 
     // Main loop
     let mut current_input_index: usize = 0;
@@ -76,9 +75,8 @@ pub extern "C" fn _start(_argc: isize, _argv: *const *const u8) {
                     .as_mut_ptr()
                     .wrapping_add(current_tape_pointer as usize)) = current_cell_value - 1;
             },
-            b'.' => unsafe {
-                let tmp_buffer: [u8; 1] = [current_cell_value];
-                syscall!(WRITE, 1, tmp_buffer.as_ptr(), 1);
+            b'.' => {
+                write_to_std_out(tape.as_ptr().wrapping_add(current_tape_pointer.into()), 1)
             },
             b',' => read_from_std_in(tape.as_ptr().wrapping_add(current_tape_pointer.into()), 1),
             b'[' => {
