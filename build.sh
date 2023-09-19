@@ -21,13 +21,18 @@ sstrip -z sbfi
 # TODO
 # https://clang.llvm.org/docs/AddressSanitizer.html
 
+# Put into dropper
+# Credit https://in4k.github.io/wiki/linux
+xz -z sbfi -e -c -k | cat sh.template - > run.sh
+chmod +x run.sh
+
 echo;
 echo "Final binary size:";
-/bin/ls -l sbfi | awk '{print $5}';
-file sbfi;
+/bin/ls -l ./run.sh | awk '{print $5}';
+file ./run.sh;
 
 #./sbfi
 # Should print �%
-echo "-." | ./sbfi;
+echo "-." | ./run.sh;
 echo;
-echo "+[-->-[>>+>-----<<]<--<---]>-.>>>+.>>..+++[.>]<<<<.+++.------.<<-.>>>>+." | ./sbfi;
+echo "+[-->-[>>+>-----<<]<--<---]>-.>>>+.>>..+++[.>]<<<<.+++.------.<<-.>>>>+." | ./run.sh;

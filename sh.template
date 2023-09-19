@@ -1,0 +1,1 @@
+cp $0 /tmp/M;(sed 1d $0|xzcat)>$_;$_;exit
