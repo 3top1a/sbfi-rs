@@ -4,7 +4,7 @@
 # rustup toolchain install nightly-x86_64-unknown-linux-gnu
 # rustup component add rust-src --toolchain nightly
 
-RUSTFLAGS="-Ctarget-cpu=native -Clink-args=-nostartfiles -Ctarget-feature=+crt-static -C relocation-model=static -Clink-args=-Wl,-n,-N,--no-dynamic-linker,--no-pie,-build-id=none " cargo +nightly b --release --target x86_64-unknown-linux-gnu;
+RUSTFLAGS="-C target-cpu=native -C link-args=-nostartfiles -C target-feature=+crt-static -C relocation-model=static -C link-args=-Wl,--gc-sections,-n,-N,--no-dynamic-linker,--no-pie,-build-id=none" cargo +nightly b --release --target x86_64-unknown-linux-gnu;
 
 # Processing
 # Copy to root
@@ -23,7 +23,7 @@ sstrip -z sbfi
 
 # Put into dropper
 # Credit https://in4k.github.io/wiki/linux
-xz -z sbfi -e -c -k | cat sh.template - > run.sh
+lzip -9 -c sbfi | cat sh.template - > run.sh
 chmod +x run.sh
 
 echo;

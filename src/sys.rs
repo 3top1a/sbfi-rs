@@ -16,19 +16,6 @@ pub fn write_to_std_out(string_pointer: *const u8, string_length: usize) {
     }
 }
 
-pub fn error(string: &'static str) {
-    unsafe {
-        asm!(
-            "syscall",
-            in("rax") 1, // write syscall number
-            in("rdi") 2, // stdout file descriptor, 2 is stderr
-            in("rsi") string.as_ptr(),
-            in("rdx") string.len(),
-        );
-    }
-    exit(1);
-}
-
 pub fn write_str_slice(string: &str) {
     write_to_std_out(string.as_ptr(), string.len())
 }
